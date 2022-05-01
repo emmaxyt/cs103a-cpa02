@@ -23,9 +23,3 @@ and start the project with
 ``` bash
 nodemon
 ```
-
-## App Demonstration 
-Here is a link to a moive showing how you can use our app: https://brandeis.zoom.us/rec/share/wliTxhF0wqb0cEPVlRDyy9Ezxhlb65GotEDAT9dRefoIZ2H5cS7jB3SHqSvE5DJc.ykwU27jWz_aO4rhM?startTime=1650622719000
-
-
-
