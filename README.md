@@ -38,8 +38,12 @@ If you don't want to install locally, you can access via https://whispering-wave
 
 * Click on the hyperlink embedded in the "course #" to read all the comments for this course
 
+___________________________________________________________________________________________
+
 Here's the link to the screenshots that demonstrate these pages: 
+
 https://drive.google.com/drive/folders/1mL-3XddmslUyiLSjsBMUSTb73ddFZ3_d?usp=sharing
 
 Here's the link to the picth + demo video: 
 
+https://zoom.us/rec/play/DcKDpmqnvo9C9FcP65ZbdAWgzawXBQ3lvIQMRI9P7jrz7KypBgwFDctz9OxjsE6iI-DCU4XsrZavCtUQ.Ls5U6XByYG_Kq8og?autoplay=true&startTime=1651533555000
