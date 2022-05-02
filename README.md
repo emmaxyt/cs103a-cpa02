@@ -28,6 +28,7 @@ nodemon
 Go to http://localhost:5000 to access the app
 
 ## How to use this app? 
+If you don't want to install locally, you can access via https://whispering-wave-48977.herokuapp.com/ 
 
 * Click on the "Course Evaluation" tab
 
