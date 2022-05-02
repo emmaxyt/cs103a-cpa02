@@ -5,7 +5,7 @@ This app is built on the structure of CS103a course selection app (PA03). It all
 
 This app provides access to a mongoose database in the cloud.
 
-## Installation
+## Local Installation
 Download the project from github and download nodejs and npm from https://nodejs.org
 and cd into the folder
 
@@ -25,9 +25,9 @@ and start the project with
 ``` bash
 nodemon
 ```
+Go to http://localhost:5000
 
-## How to use this app once installed? 
--Go to http://localhost:5000
+## How to use this app? 
 
 -Click on the "Course Evaluation" tab
 
