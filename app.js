@@ -34,7 +34,7 @@ const courses = require('./public/data/courses20-21.json')
 // *********************************************************** //
 const mongoose = require('mongoose');
 // create a mongodb atlas URL for my own cloud-based mongodb database
-const mongodb_URI = 'mongodb+srv://emmaxu:emmaluna@cluster0.m0nzb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+$Env: mongodb_URI = 'mongodb+srv://emmaxu:emmaluna@cluster0.m0nzb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 mongoose.connect(mongodb_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 // fix deprecation warnings
