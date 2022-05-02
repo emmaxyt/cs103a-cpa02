@@ -1,0 +1,40 @@
+<h1>All courses that've been evaluated</h1>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Course #</th>
+            <th>Instructor</th>
+            <th>Evaluation (0-5)</th>
+            <th>Number of people evaluated</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <% for (evaluation of evaluations) { %>
+      <tr class="mb-2"> 
+        <td>
+            <a href="/courseEvaluation/show/<%=evaluation._id %>">
+            <%=  evaluation['courseSubject']%>
+            <%=  evaluation['courseNum'] %>  
+            </a>
+        </td>
+        <td>
+            <%= evaluation['courseInstructor'] + "@brandeis.edu"%>
+        </td>
+        <td>
+            <% let average = 0 %>
+            <% let length = 0 %>
+            <% for (rate of evaluation.ratelist) { %>
+                <% average += rate%>
+                <% length ++ %>
+                <% } %>
+            <strong>
+            <%= average/length %>
+            </strong>
+        </td>
+        <td>
+            <%= length %>
+        </td>
+    </tr>
+    <% } %>
+    </tbody>
+</table>

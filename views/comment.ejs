@@ -1,0 +1,28 @@
+<p class="p-3 m-3 border border-primary bg-light">
+    <strong>
+        <%= evaluations.courseSubject %>
+            <%= evaluations.courseNum %>
+    </strong>
+    <br>
+    <%= evaluations.courseInstructor + "@brandeis.edu" %>
+        </br>
+
+        </span>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <% for (comment of evaluations.commentlist) { %>
+        <tr class="mb-2">
+            <td>
+                <%= comment%>
+            </td>
+        </tr>
+        <% } %>
+            </tbody>
+</table>

@@ -1,0 +1,40 @@
+<div class="jumbotron">
+    <h1>Course Evaluation Fall20-Spr21 </h1>
+    <p></p>
+</div>
+
+<p class="p-3 m-3 border border-primary bg-light">
+    Which course do you want to anonymously evaluate?
+</p>
+
+<form method="post" action="/courseEvalutaion/add">
+    <br>
+    Enter the subject (required):
+    <input type="text" name="courseSubject" placeholder="e.g. COSI">
+    </br>
+
+    <br>
+    Enter the course number (required):
+    <input type="text" name="courseNum" placeholder="e.g. 10a">
+    </br>
+
+    <br>
+    Enter the instructor (required):
+    <input type="text" name="courseInstructor" placeholder="e.g. tjhickey">
+    </br>
+
+    <br>
+    Enter your rating (on a scale of 0-5: 0 as would not recommend, 5 as highly recommend):
+    <input type="number" name="rate">
+    </br>
+
+    <br>
+    Enter your comment:
+    <textarea name="comment"></textarea>
+    </br>
+
+
+    <br>
+    <input type="submit" value="Submit Evaluation">
+    </br>
+</form>

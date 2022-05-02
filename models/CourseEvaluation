@@ -1,0 +1,16 @@
+'use strict';
+const mongoose = require( 'mongoose' );
+const { stringify } = require('nodemon/lib/utils');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
+const Mixed = Schema.Types.Mixed;
+
+var courseEvaluationSchema = Schema( {
+    courseSubject: String, 
+    courseNum: String, 
+    courseInstructor: String,
+    ratelist: [Number],
+    commentlist: [String],
+} );
+
+module.exports = mongoose.model( 'CourseEvaluation', courseEvaluationSchema);

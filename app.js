@@ -21,6 +21,7 @@ const axios = require("axios")
 const ToDoItem = require("./models/ToDoItem")
 const Course = require('./models/Course')
 const Schedule = require('./models/Schedule')
+const CourseEvaluation = require('./models/CourseEvaluation')
 
 // *********************************************************** //
 //  Loading JSON datasets
@@ -31,23 +32,18 @@ const courses = require('./public/data/courses20-21.json')
 // *********************************************************** //
 //  Connecting to the database
 // *********************************************************** //
+const mongoose = require('mongoose');
+// create a mongodb atlas URL for my own cloud-based mongodb database
+const mongodb_URI = 'mongodb+srv://emmaxu:emmaluna@cluster0.m0nzb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
-const mongoose = require( 'mongoose' );
-//const mongodb_URI = 'mongodb://localhost:27017/cs103a_todo'
-const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-//mongodb+srv://cs103a:<password>@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-
-mongoose.connect( mongodb_URI, { useNewUrlParser: true, useUnifiedTopology: true } );
+mongoose.connect(mongodb_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 // fix deprecation warnings
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {console.log("we are connected!!!")});
-
-
-
+db.once('open', function () { console.log("we are connected!!!") });
 
 
 // *********************************************************** //
@@ -60,8 +56,6 @@ const app = express();
 // Here we specify that we will be using EJS as our view engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-
-
 
 // this allows us to use page layout for the views
 // so we don't have to repeat the headers and footers on every page ...
@@ -96,7 +90,7 @@ const { deflateSync } = require("zlib");
 app.use(auth)
 
 // middleware to test is the user is logged in, and if not, send them to the login page
-const isLoggedIn = (req,res,next) => {
+const isLoggedIn = (req, res, next) => {
   if (res.locals.loggedIn) {
     next()
   }
@@ -110,68 +104,73 @@ app.get("/", (req, res, next) => {
   res.render("index");
 });
 
+/*
+create form for CourseEvaluation feature 
+*/
+app.get('/CourseEvaluation', (req, res, next) => {
+  res.render("courseEvaluationForm");
+})
+
 app.get("/about", (req, res, next) => {
   res.render("about");
 });
-
-
 
 /*
     ToDoList routes
 */
 app.get('/todo',
   isLoggedIn,   // redirect to /login if user is not logged in
-  async (req,res,next) => {
-    try{
+  async (req, res, next) => {
+    try {
       let userId = res.locals.user._id;  // get the user's id
-      let items = await ToDoItem.find({userId:userId}); // lookup the user's todo items
+      let items = await ToDoItem.find({ userId: userId }); // lookup the user's todo items
       res.locals.items = items;  //make the items available in the view
       res.render("toDo");  // render to the toDo page
-    } catch (e){
+    } catch (e) {
       next(e);
     }
   }
-  )
+)
 
-  app.post('/todo/add',
+app.post('/todo/add',
   isLoggedIn,
-  async (req,res,next) => {
-    try{
-      const {title,description} = req.body; // get title and description from the body
+  async (req, res, next) => {
+    try {
+      const { title, description } = req.body; // get title and description from the body
       const userId = res.locals.user._id; // get the user's id
       const createdAt = new Date(); // get the current date/time
-      let data = {title, description, userId, createdAt,} // create the data object
+      let data = { title, description, userId, createdAt, } // create the data object
       let item = new ToDoItem(data) // create the database object (and test the types are correct)
       await item.save() // save the todo item in the database
       res.redirect('/todo')  // go back to the todo page
-    } catch (e){
+    } catch (e) {
       next(e);
     }
   }
-  )
+)
 
-  app.get("/todo/delete/:itemId",
-    isLoggedIn,
-    async (req,res,next) => {
-      try{
-        const itemId=req.params.itemId; // get the id of the item to delete
-        await ToDoItem.deleteOne({_id:itemId}) // remove that item from the database
-        res.redirect('/todo') // go back to the todo page
-      } catch (e){
-        next(e);
-      }
-    }
-  )
-
-  app.get("/todo/completed/:value/:itemId",
+app.get("/todo/delete/:itemId",
   isLoggedIn,
-  async (req,res,next) => {
-    try{
-      const itemId=req.params.itemId; // get the id of the item to delete
-      const completed = req.params.value=='true';
-      await ToDoItem.findByIdAndUpdate(itemId,{completed}) // remove that item from the database
+  async (req, res, next) => {
+    try {
+      const itemId = req.params.itemId; // get the id of the item to delete
+      await ToDoItem.deleteOne({ _id: itemId }) // remove that item from the database
       res.redirect('/todo') // go back to the todo page
-    } catch (e){
+    } catch (e) {
+      next(e);
+    }
+  }
+)
+
+app.get("/todo/completed/:value/:itemId",
+  isLoggedIn,
+  async (req, res, next) => {
+    try {
+      const itemId = req.params.itemId; // get the id of the item to delete
+      const completed = req.params.value == 'true';
+      await ToDoItem.findByIdAndUpdate(itemId, { completed }) // remove that item from the database
+      res.redirect('/todo') // go back to the todo page
+    } catch (e) {
       next(e);
     }
   }
@@ -181,40 +180,40 @@ app.get('/todo',
   Functions needed for the course finder routes
    ************************ */
 
-function getNum(coursenum){
+function getNum(coursenum) {
   // separate out a coursenum 103A into
   // a num: 103 and a suffix: A
-  i=0;
-  while (i<coursenum.length && '0'<=coursenum[i] && coursenum[i]<='9'){
-    i=i+1;
+  i = 0;
+  while (i < coursenum.length && '0' <= coursenum[i] && coursenum[i] <= '9') {
+    i = i + 1;
   }
-  return coursenum.slice(0,i);
+  return coursenum.slice(0, i);
 }
 
 
-function times2str(times){
+function times2str(times) {
   // convert a course.times object into a list of strings
   // e.g ["Lecture:Mon,Wed 10:00-10:50","Recitation: Thu 5:00-6:30"]
-  if (!times || times.length==0){
+  if (!times || times.length == 0) {
     return ["not scheduled"]
   } else {
     return times.map(x => time2str(x))
   }
 
 }
-function min2HourMin(m){
+function min2HourMin(m) {
   // converts minutes since midnight into a time string, e.g.
   // 605 ==> "10:05"  as 10:00 is 60*10=600 minutes after midnight
-  const hour = Math.floor(m/60);
-  const min = m%60;
-  if (min<10){
+  const hour = Math.floor(m / 60);
+  const min = m % 60;
+  if (min < 10) {
     return `${hour}:0${min}`;
-  }else{
+  } else {
     return `${hour}:${min}`;
   }
 }
 
-function time2str(time){
+function time2str(time) {
   // creates a Times string for a lecture or recitation, e.g.
   //     "Recitation: Thu 5:00-6:30"
   const start = time.start
@@ -227,7 +226,6 @@ function time2str(time){
 }
 
 
-
 /* ************************
   Loading (or reloading) the data into a collection
    ************************ */
@@ -235,27 +233,60 @@ function time2str(time){
 // or updates the courses if it is not a new collection
 
 app.get('/upsertDB',
-  async (req,res,next) => {
-    for (course of courses){
-      const {subject,coursenum,section,term,times}=course;
+  async (req, res, next) => {
+    for (course of courses) {
+      const { subject, coursenum, section, term, times } = course;
       const num = getNum(coursenum);
-      course.num=num
+      course.num = num
       course.suffix = coursenum.slice(num.length)
-    //  console.log("upsert passed")
+      //console.log("upsert passed")
       course.strTimes = times2str(course.times)
-      await Course.findOneAndUpdate({subject,coursenum,section,term,times},course,{upsert:true})
+      await Course.findOneAndUpdate({ subject, coursenum, section, term, times }, course, { upsert: true })
     }
     const num = await Course.find({}).count();
-    res.send("data uploaded: "+num)
+    res.send("data uploaded: " + num)
   }
 )
 
+app.post('/courseEvalutaion/add',
+  async (req, res, next) => {
+    try {
+      const { courseSubject, courseNum, courseInstructor, rate, comment } = req.body;
+      let ratelist = new Array(rate)
+      let commentlist = new Array(comment)
+      //data base query
+      const lookup = await CourseEvaluation.find({ courseSubject, courseNum, courseInstructor })
+      if (lookup.length == 0) {
+        const item = new CourseEvaluation({ courseSubject, courseNum, courseInstructor, ratelist, commentlist })
+        item.insert
+        await item.save()
+      } else {
+        await CourseEvaluation.updateOne({ courseSubject: courseSubject, courseNum: courseNum, courseInstructor: courseInstructor }, { $push: { ratelist: rate } })
+        await CourseEvaluation.updateOne({ courseSubject: courseSubject, courseNum: courseNum, courseInstructor: courseInstructor }, { $push: { commentlist: comment } })
+      }
+      res.redirect('/courseEvaluation/show')
+    } catch (e) {
+      next(e)
+    }
+  })
+
+app.get('/courseEvaluation/show',
+  async (req, res, next) => {
+    try {
+      const evaluations = await CourseEvaluation.find()
+      res.locals.evaluations = evaluations
+      res.render('evaluationList')
+    } catch (e) {
+      next(e);
+    }
+  }
+)
 
 app.post('/courses/bySubject',
   // show list of courses in a given subject
-  async (req,res,next) => {
-    const {subject} = req.body;
-    const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
+  async (req, res, next) => {
+    const { subject } = req.body;
+    const courses = await Course.find({ subject: subject }).sort({ term: 1, num: 1, section: 1 })
 
     res.locals.courses = courses
     //res.json(courses)
@@ -265,20 +296,33 @@ app.post('/courses/bySubject',
 
 app.get('/courses/show/:courseId',
   // show all info about a course given its courseid
-  async (req,res,next) => {
-    const {courseId} = req.params;
-    const course = await Course.findOne({_id:courseId})
+  async (req, res, next) => {
+    const { courseId } = req.params;
+    const course = await Course.findOne({ _id: courseId })
     res.locals.course = course
     //res.json(course)
     res.render('course')
   }
 )
 
+app.get('/courseEvaluation/show/:evaluationId',
+  async (req, res, next) => {
+    try{
+    const { evaluationId } = req.params;
+    const evaluations = await CourseEvaluation.findOne({ _id: evaluationId })
+    res.locals.evaluations = evaluations
+    res.render('comment')
+    } catch (e){
+      next(e);
+    }
+  }
+)
+
 app.get('/courses/byInst/:email',
   // show a list of all courses taught by a given faculty
-  async (req,res,next) => {
-    const email = req.params.email+"@brandeis.edu";
-    const courses = await Course.find({instructor:email,independent_study:false})
+  async (req, res, next) => {
+    const email = req.params.email + "@brandeis.edu";
+    const courses = await Course.find({ instructor: email, independent_study: false })
     //res.json(courses)
     res.locals.courses = courses
     res.render('courselist')
@@ -287,12 +331,12 @@ app.get('/courses/byInst/:email',
 
 app.post('/courses/byInst',
   // show courses taught by a faculty send from a form
-  async (req,res,next) => {
-    const email = req.body.email+"@brandeis.edu";
+  async (req, res, next) => {
+    const email = req.body.email + "@brandeis.edu";
     const courses =
-       await Course
-               .find({instructor:email,independent_study:false})
-               .sort({term:1,num:1,section:1})
+      await Course
+        .find({ instructor: email, independent_study: false })
+        .sort({ term: 1, num: 1, section: 1 })
     //res.json(courses)
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -302,11 +346,11 @@ app.post('/courses/byInst',
 
 app.post('/courses/byKeyword',
   // show courses by keyword
-  async (req,res,next) => {
+  async (req, res, next) => {
     const courses =
-       await Course
-               .find({name: {$regex : req.body.keyword}})
-               .sort({term:1,num:1,sectiomn:1})
+      await Course
+        .find({ name: { $regex: req.body.keyword } })
+        .sort({ term: 1, num: 1, sectiomn: 1 })
     //res.json(courses)
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -316,12 +360,12 @@ app.post('/courses/byKeyword',
 
 app.post('/courses/byDay',
   // show courses by day
-  async (req,res,next) => {
+  async (req, res, next) => {
     const day = req.body.day;
     const courses =
-       await Course
-               .find({times: {'$elemMatch':{'days':day, }},independent_study:false})
-               .sort({term:1,num:1,sectiomn:1})
+      await Course
+        .find({ times: { '$elemMatch': { 'days': day, } }, independent_study: false })
+        .sort({ term: 1, num: 1, sectiomn: 1 })
     //res.json(courses)
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -333,34 +377,34 @@ app.use(isLoggedIn)
 
 app.get('/addCourse/:courseId',
   // add a course to the user's schedule
-  async (req,res,next) => {
+  async (req, res, next) => {
     try {
       const courseId = req.params.courseId
       const userId = res.locals.user._id
       // check to make sure it's not already loaded
-      const lookup = await Schedule.find({courseId,userId})
-      if (lookup.length==0){
-        const schedule = new Schedule({courseId,userId})
+      const lookup = await Schedule.find({ courseId, userId })
+      if (lookup.length == 0) {
+        const schedule = new Schedule({ courseId, userId })
         await schedule.save()
       }
       res.redirect('/schedule/show')
-    } catch(e){
+    } catch (e) {
       next(e)
     }
   })
 
 app.get('/schedule/show',
   // show the current user's schedule
-  async (req,res,next) => {
-    try{
+  async (req, res, next) => {
+    try {
       const userId = res.locals.user._id;
       const courseIds =
-         (await Schedule.find({userId}))
-                        .sort(x => x.term)
-                        .map(x => x.courseId)
-      res.locals.courses = await Course.find({_id:{$in: courseIds}})
+        (await Schedule.find({ userId }))
+          .sort(x => x.term)
+          .map(x => x.courseId)
+      res.locals.courses = await Course.find({ _id: { $in: courseIds } })
       res.render('schedule')
-    } catch(e){
+    } catch (e) {
       next(e)
     }
   }
@@ -368,14 +412,16 @@ app.get('/schedule/show',
 
 app.get('/schedule/remove/:courseId',
   // remove a course from the user's schedule
-  async (req,res,next) => {
+  async (req, res, next) => {
     try {
       await Schedule.remove(
-                {userId:res.locals.user._id,
-                 courseId:req.params.courseId})
+        {
+          userId: res.locals.user._id,
+          courseId: req.params.courseId
+        })
       res.redirect('/schedule/show')
 
-    } catch(e){
+    } catch (e) {
       next(e)
     }
   }
@@ -383,13 +429,13 @@ app.get('/schedule/remove/:courseId',
 
 
 // here we catch 404 errors and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // this processes any errors generated by the previous routes
 // notice that the function has four parameters which is how Express indicates it is an error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
