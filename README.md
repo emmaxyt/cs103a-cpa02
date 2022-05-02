@@ -28,7 +28,11 @@ nodemon
 
 ## How to use this app once installed? 
 -Go to http://localhost:5000
+
 -Click on the "Course Evaluation" tab
+
 -Enter the information about the course that you want to evluate and submit!
+
 -You will be directed to a list of courses that've evaluated
+
 -Click on the hyperlink embedded in the "course #" to read all the comments for this course
