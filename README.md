@@ -36,3 +36,5 @@ nodemon
 -You will be directed to a list of courses that've evaluated
 
 -Click on the hyperlink embedded in the "course #" to read all the comments for this course
+
+Here's the link to the screenshots that demonstrate these steps: https://drive.google.com/drive/folders/1mL-3XddmslUyiLSjsBMUSTb73ddFZ3_d?usp=sharing
