@@ -25,16 +25,20 @@ and start the project with
 ``` bash
 nodemon
 ```
-Go to http://localhost:5000
+Go to http://localhost:5000 to access the app
 
 ## How to use this app? 
 
--Click on the "Course Evaluation" tab
+* Click on the "Course Evaluation" tab
 
--Enter the information about the course that you want to evluate and submit!
+* Enter the information about the course that you want to evluate and submit!
 
--You will be directed to a list of courses that've evaluated
+* You will be directed to a list of courses that've evaluated
 
--Click on the hyperlink embedded in the "course #" to read all the comments for this course
+* Click on the hyperlink embedded in the "course #" to read all the comments for this course
 
-Here's the link to the screenshots that demonstrate these steps: https://drive.google.com/drive/folders/1mL-3XddmslUyiLSjsBMUSTb73ddFZ3_d?usp=sharing
+Here's the link to the screenshots that demonstrate these pages: 
+https://drive.google.com/drive/folders/1mL-3XddmslUyiLSjsBMUSTb73ddFZ3_d?usp=sharing
+
+Here's the link to the picth + demo video: 
+
